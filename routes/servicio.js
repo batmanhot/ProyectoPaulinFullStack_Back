@@ -61,6 +61,12 @@ router.put("/editar-servicio/:id", evidenciasUpload, async (req, res) => {
             if (req.body.fechaServicio) servicio.fechaServicio = req.body.fechaServicio;
             if (req.body.observacion) servicio.observacion = req.body.observacion;
 
+            // Actualizar la firma del cliente
+            if (req.body.firmaCliente) {
+                servicio.firmaCliente = req.body.firmaCliente;
+                console.log('Firma del cliente actualizada');
+            }
+
             // Actualizar el estado de servicio cerrado
             if (req.body.servicioCerrado !== undefined) {
                 servicio.servicioCerrado = req.body.servicioCerrado === 'true' || req.body.servicioCerrado === true;

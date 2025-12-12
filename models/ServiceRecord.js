@@ -9,6 +9,7 @@ const ServiceRecordSchema = new mongoose.Schema({
     fechaServicio: { type: Date, required: true },
     observacion: { type: String },
     conformidadCliente: { type: String }, // Storing name or signature data
+    firmaCliente: { type: String }, // Firma digital del cliente (base64 o URL)
     servicioCerrado: { type: Boolean, default: false }, // Indica si el servicio está cerrado y no se puede modificar
     evidencia: {
         casilla1: { type: Boolean, default: false },
