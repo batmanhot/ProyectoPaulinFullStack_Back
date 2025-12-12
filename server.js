@@ -1,18 +1,19 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import ServiceRecord from './models/ServiceRecord.js'
+import servicioRoutes from './routes/servicio.js'
 
 import dotenv from 'dotenv';
 dotenv.config();
 
 console.log(process.env.MONGO_URI);
 
-
-//const express = require('express');
-//const mongoose = require('mongoose');
-//const cors = require('cors');
-//const ServiceRecord = require('./models/ServiceRecord');
+// Para obtener __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,13 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Servir archivos estáticos desde la carpeta uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+console.log('📁 Sirviendo archivos estáticos desde:', path.join(__dirname, "uploads"));
+
+app.use("/api", servicioRoutes);
+
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/proyecto_paulin')
@@ -30,6 +38,22 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/proyecto_pa
 
 app.get('/api/test', (req, res) => {
     res.send('Hello Mundo esto es una prueba del backend del Proyecto Paulin!');
+});
+
+// Ruta de prueba para verificar archivos estáticos
+app.get('/api/test-uploads', (req, res) => {
+    const fs = require('fs');
+    const uploadsPath = path.join(__dirname, 'uploads', 'evidencias');
+    fs.readdir(uploadsPath, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json({
+            message: 'Archivos en uploads/evidencias:',
+            path: uploadsPath,
+            files: files
+        });
+    });
 });
 
 
@@ -82,6 +106,7 @@ app.delete('/api/services/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
