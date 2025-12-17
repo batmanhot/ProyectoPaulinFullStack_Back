@@ -5,6 +5,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import ServiceRecord from './models/ServiceRecord.js'
 import servicioRoutes from './routes/servicio.js'
+import dashboardRoutes from './routes/dashboard.js'
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -27,6 +28,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 console.log('📁 Sirviendo archivos estáticos desde:', path.join(__dirname, "uploads"));
 
 app.use("/api", servicioRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 
 // Database Connection
